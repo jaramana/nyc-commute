@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>NYC Commute</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<link rel="stylesheet" href="./leaflet/leaflet.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+<link rel="stylesheet" href="./plugins/leaflet-sidebar.min.css">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./plugins/leaflet.groupedlayercontrol.css">
+<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div id="sidebar" class="leaflet-sidebar collapsed">
+    <!-- Nav tabs -->
+    <div class="leaflet-sidebar-tabs">
+        <ul role="tablist"> <!-- top aligned tabs -->
+   	  <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+	  <li><a href="#profile" role="tab"><i class="fa fa-info-circle"></i></a></li>
+	  <li><a href="#download" role="tab"><i class="fa fa-arrow-down"></i></a></li>
+        </ul>
+
+	<!-- bottom aligned tabs -->
+	<ul role="tablist">
+		<li><a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a></li>
+	</ul>
+    </div>
+
+  <!-- Tab panes -->
+  <div class="leaflet-sidebar-content">
+    <div class="leaflet-sidebar-pane" id="home">
+      <h1 class="leaflet-sidebar-header">
+        NYC Commute
+        <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+      </h1>
+		<br>
+	  	  <h6>Layers</h6>
+
+	  <span id="layercontrol"></span>
+
+    </div>
+    <div class="leaflet-sidebar-pane" id="profile">
+      <h1 class="leaflet-sidebar-header">NYC Commute<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+	  <br>
+	  <h6>About</h6>
+	<p>This web map uses data collected for the American Community Survey (5-year, 2017) to visualize commuting in New York City, with overlays for some major transportation infrastructure in NYC.</p>
+	<p>You can find more information regarding the data and categories at the <a href="https://www.census.gov/topics/employment/commuting/guidance/commuting.html" target="_blank">US Census Bureau</a>.</p>
+    </div>
+
+    <div class="leaflet-sidebar-pane" id="download">
+      <h1 class="leaflet-sidebar-header">NYC Commute<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+	  <br>
+	  <h6>Downloads</h6>
+	<p>Original ACS Table:<br> <a href="./download/ACS_17_5YR_S0801.zip" target="_blank">ACS_17_5YR_S0801.zip</a></p>
+	<p>Calculated ACS Table:<br> <a href="./download/ACS_17_5YR_S0801_Calculated.csv" target="_blank">ACS_17_5YR_S0801_Calculated.csv</a></p>
+	<p>Clipped 2017 Census Tracts:<br> <a href="./download/tl_2017_36_tract_clipped.zip" target="_blank">tl_2017_36_tract_clipped.zip</a></p>
+	<p>Joined Calculated ACS Table + Clipped Census Tracts:<br> <a href="./download/ACS_17_5YR_S0801_Joined.geojson" target="_blank">ACS_17_5YR_S0801_Joined.geojson</a></p>
+	<p>Bus Routes: <br> <a href="./download/Bus Routes.geojson" target="_blank">Bus Routes.geojson</a> | <a href="https://www.baruch.cuny.edu/confluence/pages/viewpage.action?pageId=28016896" target="_blank">Source</a></p>
+	<p>Subway Lines: <br> <a href="./download/Subway Lines.geojson" target="_blank">Subway Lines.geojson</a> | <a href="https://data.cityofnewyork.us/Transportation/Subway-Lines/3qz8-muuu" target="_blank">Source</a></p>
+	<p>Ferry Routes: <br> <a href="./download/Ferry Routes.geojson" target="_blank">Ferry Routes.geojson</a> | <a href="https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-lion.page" target="_blank">Source</a></p>
+	<p>Bicycle Lanes: <br> <a href="./download/Bicycle Lanes.geojson" target="_blank">Bicycle Lanes.geojson</a> | <a href="https://data.cityofnewyork.us/Transportation/Bicycle-Routes/7vsa-caz7" target="_blank">Source</a></p>
+    </div>
+	
+  </div>
+</div>
+
+<div id="map"></div>
+
+<script class="popupTemplate_Majority" type="x-tmpl-mustache">
+<center>
+  <div>
+	<div>{{ACS_17_5YR_S0801_Majority}}</div>
+  </div>
+  </center>
+</script>
+
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.1.1/js/leaflet-sidebar.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@2.0.4/fetch.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.0/mustache.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
+<script src="./plugins/leaflet.groupedlayercontrol.js"></script>
+<script src="./plugins/L.Control.Layers.Tree.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="./data/ACS_17_5YR_S0801_MT.js"></script>
+<script src="./data/Subway_Lines.js"></script>
+<script src="./data/Subway_Stations.js"></script>
+<script src="./data/Bus_Routes.js"></script>
+<script src="./data/Ferry_Routes.js"></script>
+<script src="./data/Bicycle_Lanes.js"></script>
+<script src="./script.js"></script>
+
+  </body>
+</html>
